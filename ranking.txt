@@ -1,5 +1,5 @@
-arandoron,125
-mika,110
-1,103
-aran,68
-mika,57
+mika,247
+joji,233
+joji,205
+Aran,180
+ joji,158

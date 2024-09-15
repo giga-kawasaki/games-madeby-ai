@@ -35,8 +35,15 @@ item_speed = 2
 items = []
 
 # フォントの設定
-font = pygame.font.SysFont(None, 36)
-game_over_font = pygame.font.SysFont(None, 72)
+font_path = "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"  # 日本語フォントファイルのパスを指定してください
+font_size = 18
+try:
+    font = pygame.font.Font(font_path, font_size)
+    game_over_font = pygame.font.Font(font_path, 36)
+except FileNotFoundError:
+    print(f"フォントファイル '{font_path}' が見つかりません。")
+    pygame.quit()
+    sys.exit()
 
 # スコアの初期値
 score = 0
@@ -88,7 +95,9 @@ def create_item():
 def show_start_screen():
     screen.fill((0, 0, 0))
     title_text = game_over_font.render("敵を避けるゲーム", True, (255, 255, 255))
-    instruction_text = font.render("Press SPACE to Start", True, (255, 255, 255))
+    instruction_text = font.render(
+        "スペースキーを押してスタート", True, (255, 255, 255)
+    )
     rules_text1 = font.render(
         "ルール：敵を避けてスコアを稼ごう！", True, (255, 255, 255)
     )
@@ -105,11 +114,11 @@ def show_start_screen():
 # ゲームオーバー画面を表示する関数
 def show_game_over_screen():
     screen.fill((0, 0, 0))
-    game_over_text = game_over_font.render("GAME OVER", True, (255, 0, 0))
-    screen.blit(game_over_text, (screen_width // 2 - 150, screen_height // 2 - 150))
+    game_over_text = game_over_font.render("ゲームオーバー", True, (255, 0, 0))
+    screen.blit(game_over_text, (screen_width // 2 - 200, screen_height // 2 - 150))
 
     # ランキングを表示
-    rank_text = font.render("Ranking:", True, (255, 255, 255))
+    rank_text = font.render("ランキング：", True, (255, 255, 255))
     screen.blit(rank_text, (screen_width // 2 - 80, screen_height // 2 - 80))
     for i, (name, s) in enumerate(rankings):
         ranking_text = font.render(f"{i+1}. {name}: {s}", True, (255, 255, 0))
@@ -118,7 +127,7 @@ def show_game_over_screen():
         )
 
     restart_text = font.render(
-        "Press R to Return to Start or Q to Quit", True, (255, 255, 255)
+        "スペースキーでスタート画面に戻る / Qキーで終了", True, (255, 255, 255)
     )
     screen.blit(restart_text, (screen_width // 2 - 250, screen_height // 2 + 100))
 
@@ -128,8 +137,8 @@ def show_game_over_screen():
 # 名前入力画面を表示する関数
 def show_name_input_screen(player_name):
     screen.fill((0, 0, 0))
-    prompt_text = font.render("Enter your name:", True, (255, 255, 255))
-    screen.blit(prompt_text, (screen_width // 2 - 100, screen_height // 2 - 50))
+    prompt_text = font.render("あなたの名前を入力してください：", True, (255, 255, 255))
+    screen.blit(prompt_text, (screen_width // 2 - 200, screen_height // 2 - 50))
     name_text = font.render(player_name, True, (255, 255, 255))
     screen.blit(name_text, (screen_width // 2 - 100, screen_height // 2))
     pygame.display.flip()
@@ -240,13 +249,13 @@ while True:
             )
 
         # スコアとハイスコアを描画（横並び）
-        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+        score_text = font.render(f"スコア: {score}", True, (255, 255, 255))
         if rankings:
             high_score_value = rankings[0][1]
         else:
             high_score_value = 0
         high_score_text = font.render(
-            f"High Score: {high_score_value}", True, (255, 255, 0)
+            f"ハイスコア: {high_score_value}", True, (255, 255, 0)
         )
         screen.blit(score_text, (10, 10))
         screen.blit(high_score_text, (score_text.get_width() + 20, 10))
@@ -269,6 +278,8 @@ while True:
                     player_name = player_name[:-1]
                 elif event.key == pygame.K_RETURN:
                     # 名前の入力が完了したらランキングに追加
+                    if player_name == "":
+                        player_name = "名無し"
                     rankings.append((player_name, score))
                     rankings.sort(key=lambda x: x[1], reverse=True)
                     rankings = rankings[:5]
@@ -286,7 +297,7 @@ while True:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_SPACE:
                     # スタート画面に戻る
                     game_state = "start"
                 if event.key == pygame.K_q:
