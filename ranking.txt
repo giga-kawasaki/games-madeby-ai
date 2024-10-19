@@ -1,5 +1,5 @@
-mika,247
-joji,233
-joji,205
-Aran,180
- joji,158
+ARAN,410
+ kotomi,383
+rippi-,377
+joji,374
+joji,360
