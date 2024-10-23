@@ -21,7 +21,9 @@ ball_x, ball_y = screen_width // 2, screen_height - 50
 ball_speed = 5
 
 # プレイヤーの画像を読み込む
-player_image = pygame.image.load("player.webp").convert_alpha()
+current_directory = os.path.dirname(__file__)
+player_image_path = os.path.join(current_directory, "player.webp")
+player_image = pygame.image.load(player_image_path).convert_alpha()
 player_image = pygame.transform.scale(player_image, (ball_radius * 2, ball_radius * 2))
 player_rect = player_image.get_rect(center=(ball_x, ball_y))
 
@@ -35,7 +37,7 @@ item_speed = 2
 items = []
 
 # フォントの設定
-font_path = "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"  # 日本語フォントファイルのパスを指定してください
+font_path = "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"  # 日本語フォントファイルのパスを指してください
 font_size = 18
 try:
     font = pygame.font.Font(font_path, font_size)
@@ -52,8 +54,10 @@ score = 0
 # ランキングの初期化
 def load_rankings():
     rankings = []
-    if os.path.exists("ranking.txt"):
-        with open("ranking.txt", "r") as f:
+    current_directory = os.path.dirname(__file__)
+    ranking_file_path = os.path.join(current_directory, "ranking.txt")
+    if os.path.exists(ranking_file_path):
+        with open(ranking_file_path, "r") as f:
             for line in f:
                 if line.strip():
                     name, score_str = line.strip().split(",")
@@ -62,7 +66,9 @@ def load_rankings():
 
 
 def save_rankings(rankings):
-    with open("ranking.txt", "w") as f:
+    current_directory = os.path.dirname(__file__)
+    ranking_file_path = os.path.join(current_directory, "ranking.txt")
+    with open(ranking_file_path, "w") as f:
         for name, score in rankings[:5]:
             f.write(f"{name},{score}\n")
 
