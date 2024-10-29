@@ -10,8 +10,13 @@ pygame.init()
 screen_size = 600
 screen_width = screen_size
 screen_height = screen_size
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("ブロック崩し")
+
+# テスト実行時はダミーの画面を使用
+if 'pytest' in sys.modules:
+    screen = pygame.Surface((screen_width, screen_height))
+else:
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("ブロック崩し")
 
 # 色の定義
 black = (0, 0, 0)
@@ -90,9 +95,10 @@ while running:
                 ball['speed'][0] = math.copysign(current_ball_speed / math.sqrt(2), ball['speed'][0])
                 ball['speed'][1] = math.copysign(current_ball_speed / math.sqrt(2), ball['speed'][1])
 
-        # ボールが画面外に出たら削除
+        # ボールが画面外に出たらゲームオーバー
         if ball['rect'].bottom >= screen_height:
-            balls.remove(ball)
+            balls.clear()  # すべてのボールを削除
+            break  # ループを抜ける
 
     # 新しいボールの追加
     if current_time - last_ball_add_time > balls_add_interval * 1000 and len(balls) < max_balls:
